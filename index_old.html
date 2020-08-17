@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tutorial</title>
+    <link href="http://fonts.googleapis.com/css?family=Varela" rel="stylesheet" />
+	<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <!-- CODELAB: Add link rel manifest -->
+	<link rel="manifest" href="/manifest.json">
+	<script type="text/javascript">
+		// CODELAB: Register service worker.
+		if ('serviceWorker' in navigator) {
+		  window.addEventListener('load', () => {
+		    navigator.serviceWorker.register('/service-worker.js')
+		        .then((reg) => {
+		          console.log('Service worker registered.', reg);
+		        });
+		  }, function(err) {
+		    // registration failed :(
+		    console.log('ServiceWorker registration failed: ', err);
+		  });
+
+		}
+	</script>
+</head>
+<body>
+	<!-- CODELAB: Add the install script here -->
+	<script src="install.js"></script>
+
+	<div id="wrapper">
+		<div id="header-wrapper">
+		<div id="header" class="container">
+			<div id="logo">
+				<h1><a href="#">PlainDisplay</a></h1>
+			</div>
+			<div id="menu">
+				<ul>
+					<li class="current_page_item"><a href="#" accesskey="1" title="">Homepage</a></li>
+					<li><a href="#" accesskey="2" title="">Our Clients</a></li>
+					<li><a href="#" accesskey="3" title="">About Us</a></li>
+					<li><a href="#" accesskey="4" title="">Careers</a></li>
+					<li><a href="#" accesskey="5" title="">Contact Us</a></li>
+				</ul>
+			</div>
+		</div>
+		</div>
+		<div id="banner">
+			<div class="container">
+				<div class="title">
+					<h2>Etiam rhoncus volutpat</h2>
+					<span class="byline">Proin gravida porttitor accumsan</span> </div>
+				<ul class="actions">
+					<li><div id="qr-reader" style="width:500px"></div></li>
+					<li><div id="qr-reader-results"></div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	
+
+	<script>
+		var resultContainer = document.getElementById('qr-reader-results');
+		var lastResult, countResults = 0;
+
+		function onScanSuccess(qrCodeMessage) {
+		    if (qrCodeMessage !== lastResult) {
+		        ++countResults;
+		        lastResult = qrCodeMessage;
+		        resultContainer.innerHTML 
+		            += `<div>[${countResults}] - ${qrCodeMessage}</div>`;
+		    }
+		}
+
+		var html5QrcodeScanner = new Html5QrcodeScanner(
+		    "qr-reader", { fps: 10, qrbox: 250 });
+		html5QrcodeScanner.render(onScanSuccess);
+	</script>
+</body>
+</html>

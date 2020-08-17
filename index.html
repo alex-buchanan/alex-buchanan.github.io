@@ -4,7 +4,10 @@
 	<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tutorial</title>
-    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Varela" rel="stylesheet" />
+	<link href="default.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+    <script type="text/javascript" src="https://unpkg.com/@zxing/library@latest"></script>
     <!-- CODELAB: Add link rel manifest -->
 	<link rel="manifest" href="/manifest.json">
 	<script type="text/javascript">
@@ -27,25 +30,144 @@
 	<!-- CODELAB: Add the install script here -->
 	<script src="install.js"></script>
 
-	<div id="qr-reader" style="width:500px"></div>
-	<div id="qr-reader-results"></div>
+	<div id="wrapper">
+		<div id="header-wrapper">
+		<div id="header" class="container">
+			<div id="logo">
+				<h1><a href="#">QR Code Demo</a></h1>
+			</div>
+			<div id="menu">
+				<ul>
+					<li class="current_page_item"><a href="#" accesskey="1" title="">Homepage</a></li>
+					<li><a href="https://github.com/zxing-js/library" accesskey="2" title="">ZXing.js Library</a></li>
+					<li><a href="https://templated.co/plaindisplay" accesskey="3" title="">Style Library</a></li>
+				</ul>
+			</div>
+		</div>
+		</div>
+		<div id="banner">
+			<div class="container">
+				<div class="title">
+					<h2>Alex Buchanan Code Demo</h2>
+					<span class="byline">QR Scan Module</span> 
+				</div>
+				<div id="sourceSelectPanel" style="display:none">
+					<label for="sourceSelect">Change video source:</label>
+					<select id="sourceSelect" style="max-width:400px">
+					</select>
+				</div>
+				<div>
+					<a class="button" id="startButton">Start</a>
+					<a class="button" id="resetButton">Reset</a>
+				</div>
+				<ul class="actions">
+					<li><video class="image-centered" id="video" width="300" height="200"></video></li>
+					<li><select id="decoding-style" size="1">
+			          <option value="once">Decode once</option>
+			          <option value="continuously">Decode continuously</option>
+			        </select></li>
+			        <li><label>QR Code Value:</label>
+      					<pre><code id="result"></code></pre>
+      				</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
 
-	<script>
-		var resultContainer = document.getElementById('qr-reader-results');
-		var lastResult, countResults = 0;
-
-		function onScanSuccess(qrCodeMessage) {
-		    if (qrCodeMessage !== lastResult) {
-		        ++countResults;
-		        lastResult = qrCodeMessage;
-		        resultContainer.innerHTML 
-		            += `<div>[${countResults}] - ${qrCodeMessage}</div>`;
-		    }
+		function decodeOnce(codeReader, selectedDeviceId) {
+		  codeReader.decodeFromInputVideoDevice(selectedDeviceId, 'video').then((result) => {
+		    console.log(result)
+		    document.getElementById('result').textContent = result.text
+		  }).catch((err) => {
+		    console.error(err)
+		    document.getElementById('result').textContent = err
+		  })
 		}
 
-		var html5QrcodeScanner = new Html5QrcodeScanner(
-		    "qr-reader", { fps: 10, qrbox: 250 });
-		html5QrcodeScanner.render(onScanSuccess);
+		function decodeContinuously(codeReader, selectedDeviceId) {
+		  codeReader.decodeFromInputVideoDeviceContinuously(selectedDeviceId, 'video', (result, err) => {
+		    if (result) {
+		      // properly decoded qr code
+		      console.log('Found QR code!', result)
+		      document.getElementById('result').textContent = result.text
+		    }
+
+		    if (err) {
+		      // As long as this error belongs into one of the following categories
+		      // the code reader is going to continue as excepted. Any other error
+		      // will stop the decoding loop.
+		      //
+		      // Excepted Exceptions:
+		      //
+		      //  - NotFoundException
+		      //  - ChecksumException
+		      //  - FormatException
+
+		      if (err instanceof ZXing.NotFoundException) {
+		        console.log('No QR code found.')
+		      }
+
+		      if (err instanceof ZXing.ChecksumException) {
+		        console.log('A code was found, but it\'s read value was not valid.')
+		      }
+
+		      if (err instanceof ZXing.FormatException) {
+		        console.log('A code was found, but it was in a invalid format.')
+		      }
+		    }
+		  })
+		}
+
+		window.addEventListener('load', function () {
+		  let selectedDeviceId;
+		  const codeReader = new ZXing.BrowserQRCodeReader()
+		  console.log('ZXing code reader initialized')
+
+		  codeReader.getVideoInputDevices()
+		    .then((videoInputDevices) => {
+		      const sourceSelect = document.getElementById('sourceSelect')
+		      selectedDeviceId = videoInputDevices[0].deviceId
+		      if (videoInputDevices.length >= 1) {
+		        videoInputDevices.forEach((element) => {
+		          const sourceOption = document.createElement('option')
+		          sourceOption.text = element.label
+		          sourceOption.value = element.deviceId
+		          sourceSelect.appendChild(sourceOption)
+		        })
+
+		        sourceSelect.onchange = () => {
+		          selectedDeviceId = sourceSelect.value;
+		        };
+
+		        const sourceSelectPanel = document.getElementById('sourceSelectPanel')
+		        sourceSelectPanel.style.display = 'block'
+		      }
+
+		      document.getElementById('startButton').addEventListener('click', () => {
+
+		        const decodingStyle = document.getElementById('decoding-style').value;
+
+		        if (decodingStyle == "once") {
+		          decodeOnce(codeReader, selectedDeviceId);
+		        } else {
+		          decodeContinuously(codeReader, selectedDeviceId);
+		        }
+
+		        console.log(`Started decode from camera with id ${selectedDeviceId}`)
+		      })
+
+		      document.getElementById('resetButton').addEventListener('click', () => {
+		        codeReader.reset()
+		        document.getElementById('result').textContent = '';
+		        console.log('Reset.')
+		      })
+
+		    })
+		    .catch((err) => {
+		      console.error(err)
+		    })
+		})
 	</script>
 </body>
 </html>
