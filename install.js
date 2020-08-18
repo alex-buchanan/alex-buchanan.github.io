@@ -1,5 +1,10 @@
 // CODELAB: Add event listener for beforeinstallprompt event
-window.addEventListener('beforeinstallprompt', saveBeforeInstallPromptEvent);
+/* window.addEventListener('beforeinstallprompt', saveBeforeInstallPromptEvent);
+
+function saveBeforeInstallPromptEvent(evt) {
+  // CODELAB: Add code to save event & show the install button.
+
+} */
 
 // CODELAB: Add code to save event & show the install button.
 deferredInstallPrompt = evt;
@@ -11,8 +16,7 @@ deferredInstallPrompt.prompt();
 evt.srcElement.setAttribute('hidden', true);
 
 // CODELAB: Log user response to prompt.
-deferredInstallPrompt.userChoice
-    .then((choice) => {
+deferredInstallPrompt.userChoice.then((choice) => {
       if (choice.outcome === 'accepted') {
         console.log('User accepted the A2HS prompt', choice);
       } else {
