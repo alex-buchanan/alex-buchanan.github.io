@@ -1,10 +1,12 @@
 {
 	"name": "QR Link",
 	"short_name": "QR Link",
+  "description": "QR Scanner Demo App",
 	"start_url": "/index.html",
 	"display": "fullscreen",
 	"background_color": "#3E4EB8",
 	"theme_color": "#2F3BA2",
+  "scope": "/",
 	"icons": [{
     "src": "/images/icons/icon-128x128.png",
       "sizes": "128x128",
