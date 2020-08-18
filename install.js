@@ -7,8 +7,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 function showInstallPromotion()
 {
-	var cc = document.getElementById('cover');
-	cc.opacity = '0.5';
+	var cc = document.getElementById("cover");
+	cc.opacity = "0.5";
 }
 
 
