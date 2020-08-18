@@ -1,4 +1,6 @@
 // CODELAB: Add event listener for beforeinstallprompt event
+let deferredPrompt;
+
 window.addEventListener('beforeinstallprompt', (e) => {
 	e.preventDefault();
 	deferredPrompt = e;
@@ -7,8 +9,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 function showInstallPromotion()
 {
-	var cc = document.getElementById("cover");
-	cc.opacity = "0.5";
+	document.getElementById("cover").opacity = 0.5;
+	deferredPrompt.prompt();
 }
 
 
