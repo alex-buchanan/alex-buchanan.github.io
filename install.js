@@ -1,7 +1,14 @@
-function saveBeforeInstallPromptEvent(evt) {
-	evt.preventDefault();
+// CODELAB: Add event listener for beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+	e.preventDefault();
+	deferredPrompt = e;
+	showInstallPromotion();
+});
+
+function showInstallPromotion()
+{
+	var cc = document.getElementById('cover');
+	cc.opacity = .5;
 }
 
-// CODELAB: Add event listener for beforeinstallprompt event
-window.addEventListener('beforeinstallprompt', saveBeforeInstallPromptEvent);
 
