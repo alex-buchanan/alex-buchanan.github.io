@@ -10,8 +10,8 @@ window.addEventListener('beforeinstallprompt', (e) => {
 function showInstallPromotion()
 {
 	document.getElementById("logo").addEventListener('click', () => {
-		document.getElementById('cover').opacity = 0.5;
-		document.getElementById('cover').z-index = 3;
+		document.getElementById('cover').style.opacity = "0.5";
+		document.getElementById('cover').style.zIndex = "3";
 		deferredPrompt.prompt();
 	});
 }
