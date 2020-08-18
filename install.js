@@ -10,6 +10,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 function showInstallPromotion()
 {
 	document.getElementById("logo").addEventListener('click', () => {
+		document.getElementById('cover').opacity = 0.5;
 		deferredPrompt.prompt();
 	});
 }
