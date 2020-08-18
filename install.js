@@ -1,6 +1,5 @@
 function saveBeforeInstallPromptEvent(evt) {
-  // CODELAB: Add code to save event & show the install button.
-  window.removeEventListener("beforeinstallprompt", saveBeforeInstallPromptEvent);
+	evt.preventDefault();
 }
 
 // CODELAB: Add event listener for beforeinstallprompt event
